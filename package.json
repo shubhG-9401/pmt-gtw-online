@@ -1,0 +1,33 @@
+{
+  "name": "pmt-gtw-online",
+  "version": "2.0.0",
+  "type": "module",
+  "description": "pmt gtw (online) - Next-Gen Self-Hosted White-Label UPI Payment Gateway with Payment Observation Engine",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "start": "node scripts/start.js",
+    "dev": "node scripts/dev.js",
+    "test": "node scripts/test-all.js",
+    "test:all": "node scripts/test-all.js",
+    "db:seed": "node scripts/seed.js"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "author": "Shubh Gupta (shubhG-9401)",
+  "license": "MIT",
+  "keywords": [
+    "upi",
+    "payment-gateway",
+    "self-hosted",
+    "white-label",
+    "banking-observer",
+    "qr-code",
+    "fintech",
+    "zero-fees"
+  ]
+}

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PMT Cloud Storefront — 0% Fee UPI Checkout Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <script src="http://localhost:7000/pmt.js"></script>
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: rgba(15, 23, 42, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --accent: #38bdf8;
+      --success: #10b981;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-image: radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.12) 0%, transparent 60%);
+    }
+    header {
+      padding: 24px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--card-border);
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(12px);
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      font-size: 20px;
+    }
+    .hero {
+      text-align: center;
+      padding: 60px 20px 40px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .hero h1 {
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #fff 40%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      font-size: 17px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      max-width: 1000px;
+      width: 100%;
+      margin: 20px auto 60px;
+      padding: 0 20px;
+    }
+    .product-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      box-shadow: 0 20px 40px -15px rgba(0,0,0,0.5);
+      transition: all 0.25s;
+    }
+    .product-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(37, 99, 235, 0.4);
+    }
+    .product-badge {
+      align-self: flex-start;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: rgba(37, 99, 235, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(37, 99, 235, 0.3);
+      text-transform: uppercase;
+    }
+    .product-title {
+      font-size: 20px;
+      font-weight: 700;
+    }
+    .product-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      flex: 1;
+    }
+    .product-price {
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+    }
+    .buy-btn {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .buy-btn:hover {
+      background: var(--primary-hover);
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+    }
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--surface);
+      border: 1px solid var(--success);
+      color: #fff;
+      padding: 16px 20px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      display: none;
+      align-items: center;
+      gap: 12px;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <span style="font-size:24px;">⚡</span>
+      <span>PMT Cloud Store</span>
+    </div>
+    <div style="font-size:13px; color:var(--text-muted);">
+      Connected to PMT GTW (0% Fees)
+    </div>
+  </header>
+
+  <section class="hero">
+    <h1>Instant UPI Direct Checkout</h1>
+    <p>Test the full payment flow in action. Click any product below to trigger the universal modal drop-in checkout with live bank observation matching.</p>
+  </section>
+
+  <main class="products-grid">
+    <!-- Product 1 -->
+    <div class="product-card">
+      <div class="product-badge">Starter</div>
+      <h2 class="product-title">Developer Pro License</h2>
+      <p class="product-desc">Full access to self-hosted UPI gateway tools, observation scripts, and unlimited local webhooks.</p>
+      <div class="product-price">₹499.00</div>
+      <button class="buy-btn" onclick="startCheckout(499.00, 'DEV_PRO_01')">
+        <span>⚡ 1-Click UPI Pay</span>
+      </button>
+    </div>
+
+    <!-- Product 2 -->
+    <div class="product-card" style="border-color: rgba(56, 189, 248, 0.3);">
+      <div class="product-badge" style="background:rgba(56,189,248,0.2); color:#fff;">Popular</div>
+      <h2 class="product-title">Full Enterprise Bundle</h2>
+      <p class="product-desc">All banking observers (Android APK, Gmail, SMS), POS till mode, and custom white-label branding suite.</p>
+      <div class="product-price">₹999.00</div>
+      <button class="buy-btn" style="background: linear-gradient(135deg, #2563eb, #38bdf8);" onclick="startCheckout(999.00, 'ENTERPRISE_02')">
+        <span>⚡ 1-Click UPI Pay</span>
+      </button>
+    </div>
+
+    <!-- Product 3 -->
+    <div class="product-card">
+      <div class="product-badge">Micro</div>
+      <h2 class="product-title">Cloud Credits Pack</h2>
+      <p class="product-desc">5,000 API simulation tokens for automated load testing and webhook testing.</p>
+      <div class="product-price">₹149.00</div>
+      <button class="buy-btn" onclick="startCheckout(149.00, 'CREDITS_03')">
+        <span>⚡ 1-Click UPI Pay</span>
+      </button>
+    </div>
+  </main>
+
+  <div class="toast" id="success-toast">
+    <div style="font-size:22px; color:var(--success);">✓</div>
+    <div>
+      <strong style="display:block;">Payment Completed!</strong>
+      <span style="font-size:12px; color:var(--text-muted);" id="toast-details">Order has been verified.</span>
+    </div>
+  </div>
+
+  <script>
+    async function startCheckout(amount, orderId) {
+      try {
+        const res = await fetch('/api/create-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ amount, orderId })
+        });
+        const data = await res.json();
+        if (data.checkoutUrl) {
+          window.PmtGateway.open({
+            checkoutUrl: data.checkoutUrl,
+            onSuccess: (payment) => {
+              document.getElementById('toast-details').innerText = `Paid ₹${payment.amount} via ${payment.utr || 'UPI'}`;
+              document.getElementById('success-toast').style.display = 'flex';
+              setTimeout(() => {
+                document.getElementById('success-toast').style.display = 'none';
+              }, 6000);
+            }
+          });
+        }
+      } catch (e) {
+        alert('Failed to initiate checkout: ' + e.message);
+      }
+    }
+  </script>
+</body>
+</html>

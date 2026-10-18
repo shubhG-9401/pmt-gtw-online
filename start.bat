@@ -1,0 +1,3 @@
+@echo off
+echo Starting PMT GTW (Online) Services...
+node scripts/dev.js

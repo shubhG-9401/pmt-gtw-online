@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Merchant Portal & Control Hub — PMT GTW</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090d16;
+      --surface: #0f172a;
+      --surface-elevated: #1e293b;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-hover: rgba(255, 255, 255, 0.16);
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-glow: rgba(37, 99, 235, 0.25);
+      --accent: #38bdf8;
+      --success: #10b981;
+      --success-glow: rgba(16, 185, 129, 0.25);
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --radius: 14px;
+      --radius-sm: 8px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* Top Navigation */
+    .navbar {
+      height: 64px;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: -0.5px;
+    }
+    .brand-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 16px;
+    }
+    .nav-tabs {
+      display: flex;
+      gap: 4px;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 4px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+    }
+    .nav-tab {
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      transition: all 0.2s;
+    }
+    .nav-tab:hover { color: #fff; }
+    .nav-tab.active { background: var(--primary); color: #fff; }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .vpa-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      background: rgba(37, 99, 235, 0.1);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 20px;
+      color: var(--accent);
+    }
+
+    /* Main Container */
+    .main-content {
+      flex: 1;
+      max-width: 1300px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    /* KPI Cards Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 18px;
+    }
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--border-hover);
+    }
+    .kpi-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .kpi-value {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.5px;
+    }
+    .kpi-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+    .kpi-badge.success { background: rgba(16, 185, 129, 0.15); color: var(--success); }
+    .kpi-badge.warning { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
+
+    /* Tab Panes */
+    .tab-pane { display: none; flex-direction: column; gap: 20px; }
+    .tab-pane.active { display: flex; }
+
+    /* Section Panels */
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .panel-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    /* Transactions Table */
+    .table-container {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+    th {
+      padding: 12px 16px;
+      color: var(--text-dim);
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+    }
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: var(--text);
+    }
+    tr:hover td { background: rgba(255, 255, 255, 0.02); }
+    .mono { font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+
+    /* Status Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .badge-success { background: rgba(16, 185, 129, 0.15); color: var(--success); }
+    .badge-active { background: rgba(37, 99, 235, 0.15); color: var(--accent); }
+    .badge-queued { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
+    .badge-failed { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+
+    /* Action Buttons */
+    .btn {
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-outline { background: transparent; border-color: var(--border); color: var(--text); }
+    .btn-outline:hover { background: rgba(255, 255, 255, 0.05); }
+
+    /* Till POS Grid */
+    .till-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .till-box {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .form-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+    .form-input {
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+    }
+    .form-input:focus { border-color: var(--primary); }
+
+    /* Live QR preview container */
+    .qr-preview-box {
+      width: 200px;
+      height: 200px;
+      background: #fff;
+      padding: 10px;
+      border-radius: 14px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .qr-preview-box svg { width: 100%; height: 100%; }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="nav-brand">
+      <div class="brand-icon">⚡</div>
+      <span>PMT GTW</span>
+      <span style="font-size:11px; padding:2px 6px; background:rgba(37,99,235,0.2); color:var(--accent); border-radius:4px; margin-left:6px;">MERCHANT</span>
+    </div>
+
+    <nav class="nav-tabs">
+      <button class="nav-tab active" onclick="switchTab('overview')">Overview</button>
+      <button class="nav-tab" onclick="switchTab('transactions')">Ledger</button>
+      <button class="nav-tab" onclick="switchTab('till')">POS Till</button>
+      <button class="nav-tab" onclick="switchTab('qr')">QR Generator</button>
+      <button class="nav-tab" onclick="switchTab('observers')">Observers</button>
+      <button class="nav-tab" onclick="switchTab('settings')">Settings</button>
+    </nav>
+
+    <div class="nav-right">
+      <span class="vpa-pill" id="nav-vpa">{{MERCHANT_VPA}}</span>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <!-- Overview Tab -->
+    <div class="tab-pane active" id="tab-overview">
+      <!-- KPI Cards -->
+      <section class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span>Total Processed Volume</span>
+            <span class="kpi-badge success">0% Gateway Fee</span>
+          </div>
+          <div class="kpi-value" id="kpi-volume">₹0.00</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span>Successful Payments</span>
+            <span class="kpi-badge success">Direct Bank</span>
+          </div>
+          <div class="kpi-value" id="kpi-success-count">0</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span>Success Rate</span>
+            <span class="kpi-badge success">Auto-Attributed</span>
+          </div>
+          <div class="kpi-value" id="kpi-rate">100%</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span>Active FIFO Queue</span>
+            <span class="kpi-badge warning">Single-Slot</span>
+          </div>
+          <div class="kpi-value" id="kpi-pending-count">0</div>
+        </div>
+      </section>
+
+      <!-- Recent Transactions Panel -->
+      <section class="panel">
+        <div class="panel-header">
+          <h2 class="panel-title">Recent UPI Transactions</h2>
+          <button class="btn btn-outline" onclick="loadData()">↻ Refresh</button>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Date / Time</th>
+                <th>Payment ID</th>
+                <th>Order Ref</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Bank UTR</th>
+                <th>Channel</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="tx-tbody">
+              <tr><td colspan="8" style="text-align:center; padding: 20px;">Loading transactions...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- Ledger Tab -->
+    <div class="tab-pane" id="tab-transactions">
+      <section class="panel">
+        <div class="panel-header">
+          <h2 class="panel-title">All Transactions Ledger</h2>
+          <input type="text" class="form-input" style="width: 280px;" id="search-input" placeholder="Search Order ID, UTR, Mobile..." oninput="handleSearch()">
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Date / Time</th>
+                <th>Payment ID</th>
+                <th>Customer</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Bank UTR</th>
+                <th>Observation Channel</th>
+              </tr>
+            </thead>
+            <tbody id="full-tx-tbody">
+              <tr><td colspan="7" style="text-align:center; padding: 20px;">Loading ledger...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- Till POS Mode Tab -->
+    <div class="tab-pane" id="tab-till">
+      <section class="panel">
+        <h2 class="panel-title">Offline Retail Store Till Billing Dock</h2>
+        <p style="color:var(--text-muted); font-size:13px;">Instant Cash and POS Card settlements for walk-in retail customers.</p>
+        
+        <div class="till-grid">
+          <div class="till-box">
+            <h3 style="font-size:15px; font-weight:700;">Create In-Store Till Bill</h3>
+            <div class="form-group">
+              <label class="form-label">Bill Amount (₹)</label>
+              <input type="number" class="form-input" id="till-amount" value="250.00">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Customer Mobile</label>
+              <input type="text" class="form-input" id="till-mobile" placeholder="9876543210">
+            </div>
+            <button class="btn btn-primary" onclick="createTillOrder()">Create Till Session</button>
+          </div>
+
+          <div class="till-box" id="till-action-box" style="display:none;">
+            <h3 style="font-size:15px; font-weight:700;">Approve Counter Settlement</h3>
+            <div style="font-size:13px; color:var(--text-muted);" id="till-session-info">--</div>
+            <div style="display:flex; gap:12px; margin-top:8px;">
+              <button class="btn btn-primary" style="background:var(--success);" onclick="approveTill('CASH')">💵 Approve Cash at Till</button>
+              <button class="btn btn-primary" onclick="approveTill('CARD')">💳 Approve Card at POS</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- QR Generator Tab -->
+    <div class="tab-pane" id="tab-qr">
+      <section class="panel">
+        <h2 class="panel-title">Quick UPI Vector QR Generator</h2>
+        <div class="till-grid">
+          <div class="till-box">
+            <div class="form-group">
+              <label class="form-label">Amount (₹)</label>
+              <input type="number" class="form-input" id="gen-amount" value="500.00" oninput="updateQrPreview()">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Order Note / Reference</label>
+              <input type="text" class="form-input" id="gen-note" value="Store Payment" oninput="updateQrPreview()">
+            </div>
+          </div>
+          <div class="till-box" style="align-items:center; justify-content:center;">
+            <div class="qr-preview-box" id="qr-preview-container">
+              <span>Generating...</span>
+            </div>
+            <div style="font-size:12px; color:var(--text-muted); margin-top:8px;">Scan with GPay, PhonePe, Paytm, or CRED</div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Observers Hub Tab -->
+    <div class="tab-pane" id="tab-observers">
+      <section class="panel">
+        <h2 class="panel-title">Banking Observation Mesh</h2>
+        <p style="color:var(--text-muted); font-size:13px;">Monitors bank SMS, Gmail alerts, and Android push notifications in real time.</p>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Device / Observer</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Last Heartbeat</th>
+              </tr>
+            </thead>
+            <tbody id="observers-tbody">
+              <tr><td colspan="4" style="text-align:center; padding: 20px;">Loading observer telemetry...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- Settings Tab -->
+    <div class="tab-pane" id="tab-settings">
+      <section class="panel">
+        <h2 class="panel-title">Merchant Gateway Credentials & White-Labeling</h2>
+        <div class="till-grid">
+          <div class="till-box">
+            <div class="form-group">
+              <label class="form-label">Settlement Payee VPA</label>
+              <input type="text" class="form-input mono" id="cfg-vpa" value="{{MERCHANT_VPA}}">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Live API Key</label>
+              <input type="text" class="form-input mono" id="cfg-api-key" value="{{API_KEY}}" readonly>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Webhook Secret</label>
+              <input type="text" class="form-input mono" id="cfg-wh-secret" value="{{WEBHOOK_SECRET}}" readonly>
+            </div>
+          </div>
+          <div class="till-box">
+            <h3 style="font-size:15px; font-weight:700;">Developer Payment Simulator</h3>
+            <p style="font-size:13px; color:var(--text-muted);">Simulate incoming bank SMS/credit to verify order completion without spending real money.</p>
+            <div class="form-group">
+              <label class="form-label">Payment ID to Credit</label>
+              <input type="text" class="form-input mono" id="sim-payment-id" placeholder="pmt_...">
+            </div>
+            <button class="btn btn-primary" onclick="simulateCredit()">⚡ Simulate Bank Credit</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    let activeTillPaymentId = null;
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      document.getElementById(`tab-${tabId}`).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    async function loadData() {
+      try {
+        const [metricsRes, txRes] = await Promise.all([
+          fetch('/api/v1/admin/metrics'),
+          fetch('/api/v1/admin/transactions?limit=25')
+        ]);
+
+        if (metricsRes.ok) {
+          const { metrics, observers } = await metricsRes.json();
+          document.getElementById('kpi-volume').innerText = `₹${metrics.totalVolume.toFixed(2)}`;
+          document.getElementById('kpi-success-count').innerText = metrics.successCount;
+          document.getElementById('kpi-rate').innerText = `${metrics.successRate}%`;
+          document.getElementById('kpi-pending-count').innerText = metrics.pendingCount;
+
+          renderObservers(observers);
+        }
+
+        if (txRes.ok) {
+          const { transactions } = await txRes.json();
+          renderTransactions(transactions);
+        }
+      } catch (e) {
+        console.error('Failed to load admin data:', e);
+      }
+    }
+
+    function renderTransactions(txs) {
+      const tbody = document.getElementById('tx-tbody');
+      const fullTbody = document.getElementById('full-tx-tbody');
+
+      if (!txs || txs.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 20px;">No transactions found.</td></tr>';
+        fullTbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 20px;">No transactions recorded.</td></tr>';
+        return;
+      }
+
+      const rows = txs.map(tx => `
+        <tr>
+          <td>${new Date(tx.created_at).toLocaleTimeString([], { hour:'2-digit', minute:'2-digit', second:'2-digit' })}</td>
+          <td class="mono">${tx.id.slice(0, 12)}...</td>
+          <td>${tx.order_id || '--'}</td>
+          <td style="font-weight:700;">₹${Number(tx.amount).toFixed(2)}</td>
+          <td><span class="badge badge-${tx.status.toLowerCase()}">${tx.status}</span></td>
+          <td class="mono">${tx.utr || '--'}</td>
+          <td>${tx.observation_channel || '--'}</td>
+          <td>
+            ${tx.status !== 'SUCCESS' ? `<button class="btn btn-outline" style="padding:4px 8px; font-size:11px;" onclick="triggerSimulate('${tx.id}', ${tx.amount})">⚡ Credit</button>` : '✓'}
+          </td>
+        </tr>
+      `).join('');
+
+      tbody.innerHTML = rows;
+      fullTbody.innerHTML = rows;
+    }
+
+    function renderObservers(obsList) {
+      const tbody = document.getElementById('observers-tbody');
+      if (!obsList || obsList.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No observer devices connected.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = obsList.map(obs => `
+        <tr>
+          <td><strong>${obs.device_name}</strong></td>
+          <td>${obs.device_id}</td>
+          <td><span class="badge badge-success">ACTIVE</span></td>
+          <td>${obs.last_heartbeat ? new Date(obs.last_heartbeat).toLocaleString() : 'Just now'}</td>
+        </tr>
+      `).join('');
+    }
+
+    async function createTillOrder() {
+      const amount = document.getElementById('till-amount').value;
+      const mobile = document.getElementById('till-mobile').value;
+      const res = await fetch('/api/v1/payments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: Number(amount), customerMobile: mobile, mode: 'COUNTER' })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        activeTillPaymentId = data.payment.id;
+        document.getElementById('till-action-box').style.display = 'flex';
+        document.getElementById('till-session-info').innerText = `Active Session: ${data.payment.id} for ₹${amount}`;
+      }
+    }
+
+    async function approveTill(method) {
+      if (!activeTillPaymentId) return;
+      const res = await fetch('/api/v1/admin/counter/approve', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ paymentId: activeTillPaymentId, paymentMethod: method })
+      });
+      if (res.ok) {
+        alert(`Approved ${method} payment successfully!`);
+        document.getElementById('till-action-box').style.display = 'none';
+        activeTillPaymentId = null;
+        loadData();
+      }
+    }
+
+    async function simulateCredit() {
+      const paymentId = document.getElementById('sim-payment-id').value;
+      const res = await fetch('/api/v1/admin/simulate-credit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ paymentId })
+      });
+      if (res.ok) {
+        alert('Credit simulated and attributed successfully!');
+        loadData();
+      }
+    }
+
+    function triggerSimulate(id, amount) {
+      document.getElementById('sim-payment-id').value = id;
+      switchTab('settings');
+    }
+
+    // Auto-refresh every 5 seconds
+    loadData();
+    setInterval(loadData, 5000);
+  </script>
+</body>
+</html>

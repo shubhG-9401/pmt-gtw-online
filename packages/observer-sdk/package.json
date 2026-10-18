@@ -1,0 +1,15 @@
+{
+  "name": "@pmt/observer-sdk",
+  "version": "2.0.0",
+  "type": "module",
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "dependencies": {
+    "@pmt/common": "*"
+  },
+  "scripts": {
+    "test": "node --test src/__tests__/**/*.test.js"
+  }
+}

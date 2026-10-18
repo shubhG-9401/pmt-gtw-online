@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>{{BRAND_NAME}} — UPI Secure Checkout</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: rgba(15, 23, 42, 0.85);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-border-glow: rgba(37, 99, 235, 0.3);
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-glow: rgba(37, 99, 235, 0.35);
+      --accent: #38bdf8;
+      --success: #10b981;
+      --success-glow: rgba(16, 185, 129, 0.3);
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --radius-lg: 20px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(37, 99, 235, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(56, 189, 248, 0.06) 0%, transparent 40%);
+    }
+
+    .checkout-wrapper {
+      width: 100%;
+      max-width: 440px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Header */
+    .checkout-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .merchant-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .merchant-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #2563eb, #38bdf8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 18px;
+      color: #fff;
+      box-shadow: 0 4px 12px var(--primary-glow);
+    }
+    .merchant-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .order-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .secure-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--success);
+      background: rgba(16, 185, 129, 0.1);
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    /* Price Section */
+    .amount-card {
+      padding: 24px;
+      text-align: center;
+      background: linear-gradient(180deg, rgba(37, 99, 235, 0.05) 0%, transparent 100%);
+      border-bottom: 1px solid var(--card-border);
+      position: relative;
+    }
+    .amount-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .amount-value {
+      font-size: 38px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.5px;
+      margin: 4px 0;
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 4px;
+    }
+    .amount-currency {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    /* Timer Pill */
+    .timer-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      padding: 6px 14px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+    .timer-icon {
+      color: var(--warning);
+      animation: pulse 2s infinite;
+    }
+    .timer-value {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    /* Content Body */
+    .checkout-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    /* QR Code Container */
+    .qr-card {
+      width: 220px;
+      height: 220px;
+      background: #ffffff;
+      padding: 12px;
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: transform 0.2s;
+    }
+    .qr-card:hover {
+      transform: scale(1.02);
+    }
+    .qr-card svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Copy UPI Block */
+    .upi-details-box {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .upi-info {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+    }
+    .upi-label {
+      font-size: 11px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .upi-vpa {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin-top: 2px;
+    }
+    .copy-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .copy-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    .copy-btn.copied {
+      background: var(--success);
+      color: #fff;
+      border-color: var(--success);
+    }
+
+    /* 1-Tap App Switcher */
+    .app-switcher-section {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .app-switcher-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .app-switcher-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--card-border);
+    }
+    .app-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .app-btn {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 12px 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--text);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .app-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--card-border-glow);
+      transform: translateY(-2px);
+    }
+    .app-btn img {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      object-fit: contain;
+    }
+
+    /* Status Sections */
+    .state-view {
+      display: none;
+      width: 100%;
+      text-align: center;
+      padding: 20px 0;
+    }
+    .state-view.active {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    /* Success Icon */
+    .success-icon-wrap {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: rgba(16, 185, 129, 0.15);
+      border: 2px solid var(--success);
+      color: var(--success);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      box-shadow: 0 0 30px var(--success-glow);
+      animation: popIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .success-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+    }
+    .success-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      max-width: 280px;
+    }
+    .receipt-box {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 13px;
+    }
+    .receipt-row {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-muted);
+    }
+    .receipt-val {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* Live Observer Pulse Indicator */
+    .live-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+      padding: 8px 16px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--card-border);
+    }
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+      animation: pulse 1.5s infinite;
+    }
+
+    /* Keyframes */
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.9); }
+    }
+    @keyframes popIn {
+      0% { transform: scale(0.6); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="checkout-wrapper">
+    <!-- Header -->
+    <header class="checkout-header">
+      <div class="merchant-info">
+        <div class="merchant-badge">{{MERCHANT_INITIAL}}</div>
+        <div>
+          <div class="merchant-title">{{MERCHANT_NAME}}</div>
+          <div class="order-sub">Order #{{ORDER_ID}}</div>
+        </div>
+      </div>
+      <div class="secure-badge">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        0% Fee Direct
+      </div>
+    </header>
+
+    <!-- Price Section -->
+    <section class="amount-card">
+      <div class="amount-label">Total Payable</div>
+      <div class="amount-value">
+        <span class="amount-currency">₹</span>
+        <span id="display-amount">{{AMOUNT}}</span>
+      </div>
+      <div class="timer-pill" id="timer-box">
+        <span class="timer-icon">⏳</span>
+        <span>Expires in:</span>
+        <span class="timer-value" id="countdown-timer">05:00</span>
+      </div>
+    </section>
+
+    <!-- Main Active View -->
+    <main class="checkout-body" id="active-view">
+      <!-- QR Code -->
+      <div class="qr-card" id="qr-container">
+        {{{QR_SVG}}}
+      </div>
+
+      <!-- Live Observer Sync Indicator -->
+      <div class="live-indicator">
+        <div class="pulse-dot"></div>
+        <span>Listening for Direct Bank Credit...</span>
+      </div>
+
+      <!-- Copy UPI Box -->
+      <div class="upi-details-box">
+        <div class="upi-info">
+          <span class="upi-label">Payee UPI VPA</span>
+          <span class="upi-vpa" id="vpa-text">{{VPA}}</span>
+        </div>
+        <button class="copy-btn" id="copy-vpa-btn" onclick="copyVpa()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          <span id="copy-btn-text">Copy</span>
+        </button>
+      </div>
+
+      <!-- 1-Tap App Switcher -->
+      <div class="app-switcher-section">
+        <div class="app-switcher-title">Pay with UPI Apps</div>
+        <div class="app-grid">
+          <a class="app-btn" href="{{INTENT_GPAY}}" target="_blank">
+            <img src="/icons/gpay.png" alt="Google Pay">
+            <span>GPay</span>
+          </a>
+          <a class="app-btn" href="{{INTENT_PHONEPE}}" target="_blank">
+            <img src="/icons/phonepe.png" alt="PhonePe">
+            <span>PhonePe</span>
+          </a>
+          <a class="app-btn" href="{{INTENT_PAYTM}}" target="_blank">
+            <img src="/icons/paytm.png" alt="Paytm">
+            <span>Paytm</span>
+          </a>
+          <a class="app-btn" href="{{INTENT_CRED}}" target="_blank">
+            <img src="/icons/cred.png" alt="CRED">
+            <span>CRED</span>
+          </a>
+        </div>
+      </div>
+    </main>
+
+    <!-- Success View -->
+    <div class="state-view" id="success-view">
+      <div class="success-icon-wrap">✓</div>
+      <div class="success-title">Payment Successful!</div>
+      <div class="success-desc">Direct bank settlement verified. Your order is confirmed.</div>
+      <div class="receipt-box">
+        <div class="receipt-row">
+          <span>Amount Paid</span>
+          <span class="receipt-val">₹<span id="success-amount">{{AMOUNT}}</span></span>
+        </div>
+        <div class="receipt-row">
+          <span>Bank UTR / Ref</span>
+          <span class="receipt-val" id="success-utr">--</span>
+        </div>
+        <div class="receipt-row">
+          <span>Transaction ID</span>
+          <span class="receipt-val" id="success-id">{{PAYMENT_ID}}</span>
+        </div>
+      </div>
+      <div class="live-indicator" id="redirect-pill" style="display:none;">
+        <div class="pulse-dot" style="background:var(--success); box-shadow:0 0 8px var(--success);"></div>
+        <span>Redirecting back to merchant in 3s...</span>
+      </div>
+    </div>
+
+    <!-- Expired View -->
+    <div class="state-view" id="expired-view">
+      <div style="font-size: 48px;">⏰</div>
+      <div class="success-title" style="color:var(--warning);">Session Expired</div>
+      <div class="success-desc">This payment window elapsed. No money was deducted. Please create a new order.</div>
+    </div>
+
+    <!-- Failed View -->
+    <div class="state-view" id="failed-view">
+      <div style="font-size: 48px;">❌</div>
+      <div class="success-title" style="color:var(--danger);">Payment Incomplete</div>
+      <div class="success-desc">Payment could not be verified within the grace period.</div>
+    </div>
+  </div>
+
+  <script>
+    const PAYMENT_ID = '{{PAYMENT_ID}}';
+    const API_BASE = '{{API_BASE_URL}}';
+    const REDIRECT_URL = '{{REDIRECT_URL}}';
+    let timeLeft = 300; // 5 minutes
+
+    // Web Audio Synthesizer for High-Delight Payment Success Chime
+    function playSuccessChime() {
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+        
+        // Play melodic 3-tone arpeggio (C5 -> E5 -> G5)
+        const notes = [523.25, 659.25, 783.99, 1046.50];
+        notes.forEach((freq, i) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.1);
+          gain.gain.setValueAtTime(0, ctx.currentTime + i * 0.1);
+          gain.gain.linearRampToValueAtTime(0.3, ctx.currentTime + i * 0.1 + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.1 + 0.35);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(ctx.currentTime + i * 0.1);
+          osc.stop(ctx.currentTime + i * 0.1 + 0.4);
+        });
+      } catch (e) {
+        // AudioContext autoplay restrictions or disabled audio
+      }
+    }
+
+    // Copy VPA to Clipboard with visual confirmation
+    function copyVpa() {
+      const vpa = document.getElementById('vpa-text').innerText;
+      navigator.clipboard.writeText(vpa).then(() => {
+        const btn = document.getElementById('copy-vpa-btn');
+        const txt = document.getElementById('copy-btn-text');
+        btn.classList.add('copied');
+        txt.innerText = 'Copied!';
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          txt.innerText = 'Copy';
+        }, 2000);
+      });
+    }
+
+    // Countdown Timer Loop
+    const timerInterval = setInterval(() => {
+      timeLeft--;
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        showState('expired');
+        return;
+      }
+      const mins = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+      const secs = (timeLeft % 60).toString().padStart(2, '0');
+      document.getElementById('countdown-timer').innerText = `${mins}:${secs}`;
+    }, 1000);
+
+    function showState(state, data = {}) {
+      document.getElementById('active-view').style.display = 'none';
+      document.getElementById('timer-box').style.display = 'none';
+      document.getElementById('success-view').classList.remove('active');
+      document.getElementById('expired-view').classList.remove('active');
+      document.getElementById('failed-view').classList.remove('active');
+
+      if (state === 'success') {
+        playSuccessChime();
+        document.getElementById('success-view').classList.add('active');
+        if (data.utr) document.getElementById('success-utr').innerText = data.utr;
+        if (data.amount) document.getElementById('success-amount').innerText = data.amount;
+
+        // PostMessage to parent frame if embedded
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({ type: 'PMT_PAYMENT_SUCCESS', data }, '*');
+        }
+
+        if (REDIRECT_URL) {
+          document.getElementById('redirect-pill').style.display = 'flex';
+          setTimeout(() => {
+            window.location.href = REDIRECT_URL;
+          }, 3000);
+        }
+      } else if (state === 'expired') {
+        document.getElementById('expired-view').classList.add('active');
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({ type: 'PMT_PAYMENT_EXPIRED' }, '*');
+        }
+      } else if (state === 'failed') {
+        document.getElementById('failed-view').classList.add('active');
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({ type: 'PMT_PAYMENT_FAILED' }, '*');
+        }
+      }
+    }
+
+    // Real-Time SSE Listener
+    try {
+      const eventSource = new EventSource(`${API_BASE}/api/v1/payments/${PAYMENT_ID}/sse`);
+      eventSource.onmessage = (event) => {
+        try {
+          const payment = JSON.parse(event.data);
+          if (payment.status === 'SUCCESS') {
+            eventSource.close();
+            showState('success', payment);
+          } else if (payment.status === 'EXPIRED') {
+            eventSource.close();
+            showState('expired');
+          } else if (payment.status === 'FAILED') {
+            eventSource.close();
+            showState('failed');
+          }
+        } catch (e) {}
+      };
+      eventSource.onerror = () => {
+        // Fall back to polling if SSE connection drops
+        startPolling();
+      };
+    } catch (e) {
+      startPolling();
+    }
+
+    // Polling Fallback
+    let pollInterval = null;
+    function startPolling() {
+      if (pollInterval) return;
+      pollInterval = setInterval(async () => {
+        try {
+          const res = await fetch(`${API_BASE}/api/v1/payments/${PAYMENT_ID}`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.payment && data.payment.status === 'SUCCESS') {
+              clearInterval(pollInterval);
+              showState('success', data.payment);
+            }
+          }
+        } catch (e) {}
+      }, 1500);
+    }
+  </script>
+</body>
+</html>
